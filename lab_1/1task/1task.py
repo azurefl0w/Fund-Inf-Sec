@@ -1,6 +1,12 @@
 from settings import ALPH, TEXT, ENCTEXT, KEY
 
 def read(filename: str) -> str:
+    """
+        Читает содержимое текстового файла.
+
+        :param filename: Путь к файлу, который нужно прочитать.
+        :return: Строка с содержимым файла или сообщение об ошибке.
+        """
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             return file.read()
@@ -8,6 +14,13 @@ def read(filename: str) -> str:
         return f"Ошибка: {e}"
 
 def save(filename: str, text: str) -> None:
+    """
+        Сохраняет текст в файл.
+
+        :param filename: Путь к файлу, в который будет записан текст.
+        :param text: Строка, которая будет записана в файл.
+        :return: None
+        """
     try:
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(text)
@@ -15,6 +28,14 @@ def save(filename: str, text: str) -> None:
         print(f"Ошибка: {e}")
 
 def caesar(text: str, alph: str, key: int) -> str:
+    """
+        Шифрует текст с помощью шифра Цезаря.
+
+        :param text: Исходный текст для шифрования.
+        :param alph: Алфавит, используемый для шифрования.
+        :param key: Числовой сдвиг для шифра.
+        :return: Зашифрованная строка.
+        """
     try:
         enctext = ""
         for char in text:
@@ -31,6 +52,14 @@ def caesar(text: str, alph: str, key: int) -> str:
         return f"Ошибка: {e}"
 
 def main() -> None:
+    """
+        Главная функция программы.
+
+        Читает исходный текст и ключ из файлов, проверяет корректность ключа,
+        выполняет шифрование методом Цезаря и сохраняет результат.
+
+        :return: None
+        """
     try:
         text = read(TEXT)
         key = read(KEY)
@@ -38,7 +67,7 @@ def main() -> None:
         if not key.isdigit():
             print("Ошибка: Ключ должен быть числом.")
             return
-        key = int(key)  # Преобразование в int
+        key = int(key)
         #print(key)
         enctext = caesar(text, ALPH, key)
         if text:
