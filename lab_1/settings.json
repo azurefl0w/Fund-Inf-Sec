@@ -1,0 +1,13 @@
+{
+    "ALPH": "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+    "TEXT": "text.txt",
+    "ENCTEXT": "enctext.txt",
+    "KEY": "key.json",
+    "DECTEXT": "dectext.txt",
+    "ENCTEXT2": "enctext2.txt",
+    "GENKEY": "genkey.json",
+    "RUSFREQ": "rusfreq.json",
+    "FINALDICT": "finaldict.json"
+}
+
+

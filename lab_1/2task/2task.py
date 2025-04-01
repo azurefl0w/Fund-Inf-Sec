@@ -1,32 +1,5 @@
-from settings import RUSFREQ, DECTEXT, ENCTEXT2, GENKEY, FINALDICT
+from file_utils import read, save, write_json, RUSFREQ, DECTEXT, ENCTEXT2, GENKEY, FINALDICT
 from collections import Counter
-
-def read(filename: str) -> str:
-    """
-        Читает содержимое текстового файла.
-
-        :param filename: Путь к файлу, который нужно прочитать.
-        :return: Строка с содержимым файла или сообщение об ошибке.
-    """
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            return file.read()
-    except Exception as e:
-        return f"Ошибка: {e}"
-
-def save(filename: str, text: str) -> None:
-    """
-        Сохраняет текст в файл.
-
-        :param filename: Путь к файлу, в который будет записан текст.
-        :param text: Строка, которая будет записана в файл.
-        :return: None
-    """
-    try:
-        with open(filename, 'w', encoding='utf-8') as file:
-            file.write(text)
-    except Exception as e:
-        print(f"Ошибка: {e}")
 
 def frequency_index(text: str) -> dict:
     """
@@ -34,14 +7,13 @@ def frequency_index(text: str) -> dict:
 
         :param text: Входной текст для анализа.
         :return: Словарь, где ключ — символ, значение — его частота в тексте.
-        """
+    """
     try:
         total_chars = len(text)
-        if total_chars == 0:
-            return {}
-
         frequencies = Counter(text)
         return {char: round(freq / total_chars, 5) for char, freq in frequencies.items()}
+    except ZeroDivisionError:
+        return {}
     except Exception as e:
         print(f"Ошибка при вычислении частотного индекса: {e}")
         return {}
@@ -119,7 +91,7 @@ def main() -> None:
         if key:
             print(key)
         save(DECTEXT, str(dectext))
-        save(GENKEY,str(key))
+        write_json(GENKEY, str(key))
 
     except Exception as e:
         print(f"Ошибка: {e}")
