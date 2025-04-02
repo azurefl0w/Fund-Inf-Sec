@@ -49,15 +49,3 @@ def save(filename: str, text: str) -> None:
             file.write(text)
     except Exception as e:
         print(f"Ошибка при записи в файл {filename}: {e}")
-
-settings = load_json("../settings.json")
-
-ALPH = settings.get("ALPH", "")
-TEXT = settings.get("TEXT", "")
-ENCTEXT = settings.get("ENCTEXT", "")
-KEY = load_json(settings.get("KEY", "")).get("KEY")
-DECTEXT = settings.get("DECTEXT", "")
-GENKEY = settings.get("GENKEY", "")
-ENCTEXT2 = settings.get("ENCTEXT2", "")
-RUSFREQ = load_json(settings.get("RUSFREQ", ""))
-FINALDICT = load_json(settings.get("FINALDICT", ""))

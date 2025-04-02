@@ -1,4 +1,4 @@
-from file_utils import read, save, ALPH, TEXT, ENCTEXT, KEY
+from file_utils import read, save, load_json
 
 def caesar(text: str, alph: str, key: int) -> str:
     """
@@ -39,17 +39,23 @@ def main() -> None:
         выполняет шифрование методом Цезаря и сохраняет результат.
 
         :return: None
-        """
+    """
+    settings = load_json("../settings.json")
+
+    alph_ = settings.get("ALPH", "")
+    text_ = settings.get("TEXT", "")
+    enctext_ = settings.get("ENCTEXT", "")
+    key_ = load_json(settings.get("KEY", "")).get("KEY")
     try:
-        text = read(TEXT)
-        match str(KEY).isdigit():
+        text = read(text_)
+        match str(key_).isdigit():
             case False:
                 print("Ошибка: Ключ должен быть числом.")
                 return
             case True:
-                key = int(KEY)
-                enctext = caesar(text, ALPH, key)
-                dectext = decrypt_caesar(enctext, ALPH, key)
+                key = int(key_)
+                enctext = caesar(text, alph_, key)
+                dectext = decrypt_caesar(enctext, alph_, key)
                 print("Исходный текст:")
                 print(text)
                 print("\n")
@@ -57,8 +63,8 @@ def main() -> None:
                     case True:
                         print("Зашифрованный текст:")
                         print(enctext)
-                        save(ENCTEXT, enctext)
-                        print("\nУспешно сохранено:", ENCTEXT)
+                        save(enctext_, enctext)
+                        print("\nУспешно сохранено:", enctext_)
                         print("\nРасшифрованный текст:")
                         print(dectext)
                     case False:

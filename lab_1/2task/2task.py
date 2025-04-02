@@ -1,4 +1,4 @@
-from file_utils import read, save, write_json, RUSFREQ, DECTEXT, ENCTEXT2, GENKEY, FINALDICT
+from file_utils import read, save, write_json, load_json
 from collections import Counter
 
 def frequency_index(text: str) -> dict:
@@ -64,9 +64,16 @@ def main() -> None:
 
         :return: None
     """
+    settings = load_json("../settings.json")
+
+    dectext_ = settings.get("DECTEXT", "")
+    genkey_ = settings.get("GENKEY", "")
+    enctext2_ = settings.get("ENCTEXT2", "")
+    rusfreq_ = load_json(settings.get("RUSFREQ", ""))
+    finaldict_ = load_json(settings.get("FINALDICT", ""))
     try:
         print("Зашифрованный текст:\n")
-        text = read(ENCTEXT2).upper()
+        text = read(enctext2_).upper()
         if not text:
             print("Ошибка: текст не загружен.")
             return
@@ -77,21 +84,21 @@ def main() -> None:
             return
         print("\nИндекс частоты появления букв в зашифрованном тексте:\n")
         print(dict(sorted(freqdict.items(), key=lambda item: item[1], reverse=True)))
-        replacedict = replacementdict(RUSFREQ, freqdict)
+        replacedict = replacementdict(rusfreq_, freqdict)
         print("\nСловарь замен первая стадия\n")
         print(replacedict)
         dectext = replace(text, replacedict)
         print("\nТекст после первой стадии дешифрования\n")
         print(dectext)
-        dectext = replace(text, FINALDICT)
+        dectext = replace(text, finaldict_)
         print("\nДешифрованный текст\n")
         print(dectext)
-        key = {v: k for k, v in FINALDICT.items()}
+        key = {v: k for k, v in finaldict_.items()}
         print("\nКлюч:\n")
         if key:
             print(key)
-        save(DECTEXT, str(dectext))
-        write_json(GENKEY, str(key))
+        save(dectext_, str(dectext))
+        write_json(genkey_, str(key))
 
     except Exception as e:
         print(f"Ошибка: {e}")
