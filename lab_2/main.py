@@ -8,7 +8,16 @@ java_sequence = read(settings["JAVAGEN_SEQ_PATH"])
 result_path = settings["RESULTS_PATH"]
 numbits = settings["NUMBITS"]
 
-def generate_sequences():
+def generate_sequences() -> None:
+    """
+    Генерирует псевдослучайные последовательности с помощью C++ и Java.
+    Выполняет компиляцию и запуск:
+    1. cgen.cpp
+    2. javagen.java
+
+    :raises subprocess.CalledProcessError: Если возникла ошибка при компиляции или выполнении
+    :return: None
+    """
     try:
         # Генерация последовательности на c++
         subprocess.run(["g++", "task1/cgen.cpp", "-o", "task1/cgen"], check=True)
@@ -22,7 +31,19 @@ def generate_sequences():
         print(f"Ошибка при генерации последовательностей: {e}")
         raise
 
-def run_tests():
+def run_tests() -> None:
+    """
+    Выполняет статистические тесты для сгенерированных последовательностей.
+    Тестирует обе последовательности с помощью:
+    1. Частотного теста
+    2. Теста на последовательности
+    3. Теста на длинные последовательности
+
+    Сохраняет результаты в файл и выводит в консоль.
+
+    :raises Exception: Если возникла ошибка при выполнении тестов
+    :return: None
+    """
     try:
         results = "Результаты тестирования\n\n"
         results += "C Sequence:\n"
