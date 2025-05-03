@@ -1,0 +1,7 @@
+{
+  "CGEN_SEQ_PATH": "task1/cgen_sequence.txt",
+  "JAVAGEN_SEQ_PATH": "task1/javagen_sequence.txt",
+  "RESULTS_PATH": "task2/results.txt",
+
+  "NUMBITS": 128
+}

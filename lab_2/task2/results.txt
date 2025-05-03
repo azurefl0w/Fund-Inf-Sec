@@ -1,0 +1,13 @@
+Результаты тестирования
+
+C Sequence:
+Frequency Test: 0.5958830906
+Runs Test: 0.1637971150
+Longest Run Test: 0.6929033814
+
+Java Sequence:
+Frequency Test: 0.2159249389
+Runs Test: 0.3490060405
+Longest Run Test: 0.8893963533
+
+Критерий прохождения: P-value ≥ 0.01
