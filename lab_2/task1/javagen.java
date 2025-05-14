@@ -2,9 +2,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
+
+
 public class javagen {
     public static void main(String[] args) throws IOException {
-        int N = 128;
+    /**
+         * Генерирует последовательность случайных битов (0 и 1) и сохраняет её в файл
+         *
+         * @param args Аргументы командной строки (не используются)
+         * @throws IOException Если происходит ошибка при записи в файл
+    */
+        int N = 128; ///< Длина битовой последовательности
         Random rand = new Random();
         StringBuilder sequence = new StringBuilder();
 

@@ -2,12 +2,6 @@ import subprocess
 from file_utils import read, save, load_json
 from task2.tests import frequency_test, runs_test, longest_run_test
 
-settings = load_json("settings.json")
-c_sequence = read(settings["CGEN_SEQ_PATH"])
-java_sequence = read(settings["JAVAGEN_SEQ_PATH"])
-result_path = settings["RESULTS_PATH"]
-numbits = settings["NUMBITS"]
-
 def generate_sequences() -> None:
     """
     Генерирует псевдослучайные последовательности с помощью C++ и Java.
@@ -44,6 +38,11 @@ def run_tests() -> None:
     :raises Exception: Если возникла ошибка при выполнении тестов
     :return: None
     """
+    settings = load_json("settings.json")
+    c_sequence = read(settings["CGEN_SEQ_PATH"])
+    java_sequence = read(settings["JAVAGEN_SEQ_PATH"])
+    result_path = settings["RESULTS_PATH"]
+
     try:
         results = "Результаты тестирования\n\n"
         results += "C Sequence:\n"

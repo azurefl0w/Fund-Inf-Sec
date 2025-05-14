@@ -1,6 +1,6 @@
 import math
 from scipy.special import erfc, gammaincc
-
+from file_utils import load_json
 
 def frequency_test(sequence: str) -> float:
     """
@@ -73,16 +73,18 @@ def longest_run_test(sequence: str, block_size: int = 8) -> float:
             current_run = current_run + 1 if bit == '1' else 0
             max_run = max(max_run, current_run)
 
-        if max_run <= 1:
-            v[0] += 1
-        elif max_run == 2:
-            v[1] += 1
-        elif max_run == 3:
-            v[2] += 1
-        else:
-            v[3] += 1
+        match max_run:
+            case x if x <= 1:
+                v[0] += 1
+            case 2:
+                v[1] += 1
+            case 3:
+                v[2] += 1
+            case _:
+                v[3] += 1
 
-    pi = [0.2148, 0.3672, 0.2305, 0.1875]
+    settings = load_json("settings.json")
+    pi = [float(x) for x in settings["PROBABILITIES"]]
     try:
         chi_square = sum((v[i] - num_blocks * pi[i]) ** 2 / (num_blocks * pi[i])
                          for i in range(4))
