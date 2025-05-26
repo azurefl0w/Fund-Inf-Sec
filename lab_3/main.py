@@ -73,27 +73,31 @@ def main():
     try:
         config = load_json_config('settings.json')['settings']
 
-        if args.generate:
-            setup_keys(
-                config['sym_key'],
-                int(config['len_key']),
-                config['publ_key'],
-                config['priv_key']
-            )
-        elif args.encrypt:
-            encrypt_data(
-                config['orig_file'],
-                config['priv_key'],
-                config['sym_key'],
-                config['enc_file']
-            )
-        elif args.decrypt:
-            decrypt_data(
-                config['enc_file'],
-                config['priv_key'],
-                config['sym_key'],
-                config['dec_file']
-            )
+        match args:
+            case _ if args.generate:
+                setup_keys(
+                    config['sym_key'],
+                    int(config['len_key']),
+                    config['publ_key'],
+                    config['priv_key']
+                )
+            case _ if args.encrypt:
+                encrypt_data(
+                    config['orig_file'],
+                    config['priv_key'],
+                    config['sym_key'],
+                    config['enc_file']
+                )
+            case _ if args.decrypt:
+                decrypt_data(
+                    config['enc_file'],
+                    config['priv_key'],
+                    config['sym_key'],
+                    config['dec_file']
+                )
+            case _:
+                print("Неизвестный режим работы")
+                sys.exit(1)
     except Exception as e:
         print(f"Ошибка: {e}")
         sys.exit(1)
