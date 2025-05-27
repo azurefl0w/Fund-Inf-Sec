@@ -31,14 +31,18 @@ def parse_args():
 
     args = parser.parse_args()
 
-    if args.generate:
-        return ProgramMode.GENERATE, args
-    elif args.encrypt:
-        return ProgramMode.ENCRYPT, args
-    elif args.decrypt:
-        return ProgramMode.DECRYPT, args
-    elif args.encrypt_key:
-        return ProgramMode.ENCRYPT_KEY, args
+    match args:
+        case _ if args.generate:
+            return ProgramMode.GENERATE, args
+        case _ if args.encrypt:
+            return ProgramMode.ENCRYPT, args
+        case _ if args.decrypt:
+            return ProgramMode.DECRYPT, args
+        case _ if args.encrypt_key:
+            return ProgramMode.ENCRYPT_KEY, args
+        case _:
+            parser.print_help()
+            sys.exit(1)
 
 def setup_keys(enc_key_path: str, key_size: int,
                public_key_path: str, private_key_path: str):
