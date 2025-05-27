@@ -4,6 +4,41 @@ from sym import *
 from asym import *
 from file_utils import read, save
 from crypt_utils import read_binary_file, write_binary_file, load_json_config
+from enum import Enum, auto
+
+class ProgramMode(Enum):
+    GENERATE = auto()
+    ENCRYPT = auto()
+    DECRYPT = auto()
+    ENCRYPT_KEY = auto()
+
+def parse_args():
+    """Парсит аргументы командной строки и определяет режим работы"""
+    parser = argparse.ArgumentParser(description='Гибридная система шифрования')
+    group = parser.add_mutually_exclusive_group(required=True)
+
+    group.add_argument('-gen', '--generate', action='store_true',
+                       help='Генерация новых ключей')
+    group.add_argument('-enc', '--encrypt', action='store_true',
+                       help='Шифрование файла')
+    group.add_argument('-dec', '--decrypt', action='store_true',
+                       help='Дешифрование файла')
+    group.add_argument('-enc-key', '--encrypt-key', metavar='KEY_FILE',
+                       help='Зашифровать существующий симметричный ключ')
+
+    parser.add_argument('--sym-key', metavar='PATH',
+                        help='Путь к симметричному ключу (по умолчанию из settings.json)')
+
+    args = parser.parse_args()
+
+    if args.generate:
+        return ProgramMode.GENERATE, args
+    elif args.encrypt:
+        return ProgramMode.ENCRYPT, args
+    elif args.decrypt:
+        return ProgramMode.DECRYPT, args
+    elif args.encrypt_key:
+        return ProgramMode.ENCRYPT_KEY, args
 
 def setup_keys(enc_key_path: str, key_size: int,
                public_key_path: str, private_key_path: str):
@@ -58,43 +93,42 @@ def decrypt_data(input_path: str, priv_key_path: str,
         print(f"Ошибка при дешифровании: {str(e)}")
         sys.exit(1)
 
+
 def main():
-    parser = argparse.ArgumentParser()
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('-gen', '--generate', action='store_true',
-                       help='Режим генерации ключей')
-    group.add_argument('-enc', '--encrypt', action='store_true',
-                       help='Режим шифрования')
-    group.add_argument('-dec', '--decrypt', action='store_true',
-                       help='Режим дешифрования')
-
-    args = parser.parse_args()
-
+    """Запускает выбранный режим"""
     try:
+        mode, args = parse_args()
         config = load_json_config('settings.json')['settings']
+        sym_key_path = args.sym_key if args.sym_key else config['sym_key']
 
-        match args:
-            case _ if args.generate:
+        match mode:
+            case ProgramMode.GENERATE:
                 setup_keys(
                     config['sym_key'],
                     int(config['len_key']),
                     config['publ_key'],
                     config['priv_key']
                 )
-            case _ if args.encrypt:
+            case ProgramMode.ENCRYPT:
                 encrypt_data(
                     config['orig_file'],
                     config['priv_key'],
-                    config['sym_key'],
+                    sym_key_path,
                     config['enc_file']
                 )
-            case _ if args.decrypt:
+            case ProgramMode.DECRYPT:
                 decrypt_data(
                     config['enc_file'],
                     config['priv_key'],
-                    config['sym_key'],
+                    sym_key_path,
                     config['dec_file']
                 )
+            case ProgramMode.ENCRYPT_KEY:
+                key_data = read_binary_file(args.encrypt_key)
+                pub_key = load_key_from_pem(config['publ_key'], False)
+                encrypted_key = rsa_encrypt(pub_key, key_data)
+                write_binary_file(sym_key_path, encrypted_key)
+                print(f"Ключ успешно зашифрован и сохранен в {sym_key_path}")
             case _:
                 print("Неизвестный режим работы")
                 sys.exit(1)
