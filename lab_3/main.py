@@ -14,7 +14,7 @@ class ProgramMode(Enum):
 
 def parse_args():
     """Парсит аргументы командной строки и определяет режим работы"""
-    parser = argparse.ArgumentParser(description='Гибридная система шифрования')
+    parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
 
     group.add_argument('-gen', '--generate', action='store_true',
@@ -97,6 +97,17 @@ def decrypt_data(input_path: str, priv_key_path: str,
         print(f"Ошибка при дешифровании: {str(e)}")
         sys.exit(1)
 
+def encrypt_existing_key(key_path: str, pub_key_path: str, output_path: str) -> None:
+    """Шифрует существующий симметричный ключ с помощью RSA"""
+    try:
+        key_data = read_binary_file(key_path)
+        pub_key = load_key_from_pem(pub_key_path, False)
+        encrypted_key = rsa_encrypt(pub_key, key_data)
+        write_binary_file(output_path, encrypted_key)
+        print(f"Ключ успешно зашифрован и сохранен в {output_path}")
+    except Exception as e:
+        print(f"Ошибка при шифровании ключа: {e}")
+        sys.exit(1)
 
 def main():
     """Запускает выбранный режим"""
@@ -128,11 +139,11 @@ def main():
                     config['dec_file']
                 )
             case ProgramMode.ENCRYPT_KEY:
-                key_data = read_binary_file(args.encrypt_key)
-                pub_key = load_key_from_pem(config['publ_key'], False)
-                encrypted_key = rsa_encrypt(pub_key, key_data)
-                write_binary_file(sym_key_path, encrypted_key)
-                print(f"Ключ успешно зашифрован и сохранен в {sym_key_path}")
+                encrypt_existing_key(
+                    args.encrypt_key,
+                    config['publ_key'],
+                    sym_key_path
+                )
             case _:
                 print("Неизвестный режим работы")
                 sys.exit(1)
